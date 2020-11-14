@@ -1,2 +1,2 @@
-# pyTrichMot
-TrichMot with Python
+# pyTrichMots
+TrichMots with Python
