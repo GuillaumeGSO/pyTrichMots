@@ -113,20 +113,24 @@ def test_recherche_2_cars():
 
 
 def test_recherche_3_cars():
-    result = list(sw.searchInFile(nbCar=99, lstCar=['d', 'a', 'b']))
+    result = list(sw.searchInFile(nbCar=99, lstCar=['c', 'a', 'b']))
     # Un seul mot contient toutes les lettres
     assert len(result) == 1
-    assert "abd" in result
+    assert "bac" in result
 
+def test_recherche_7_cars_with_accent():
+    result = list(sw.searchInFile(nbCar=99, lstCar=['e', 'e', 'e','i','o','u']))
+    # Un seul mot contient toutes les lettres
+    assert len(result) == 1
+    assert "éèêiôù" in result
 
 def test_recherche_3_cars_et_plus():
     #On passe l'ensemble des lettres existantes
     result = list(sw.searchInFile(nbCar=99, lstCar=[
                   'a', 'b', 'c', 'd', 'i', 'o', 'p', 'x', 'y', 'z']))
     #On récupère donc l'ensemble des mots
-    assert len(result) == 5
-    assert "abc" in result
-    assert "abd" in result
+    assert len(result) == 4
+    assert "bac" in result
     assert "opa" in result
     assert "api" in result
     assert "xyz" in result
@@ -149,9 +153,7 @@ def test_recherche_hint_2():
 def test_recherche_hint_3():
     result = list(sw.searchInFile(nbCar=99, lstHint=["a"]))
     # Tous les mots qui commencent par "a"
-    assert len(result) == 3
-    assert "abc" in result
-    assert "abd" in result
+    assert len(result) == 1
     assert "api" in result
 
 def test_recherche_complete():
@@ -159,7 +161,5 @@ def test_recherche_complete():
     result = list(sw.searchInFile(nbCar=99, lstCar=[
                   'a', 'b', 'c', 'd', 'i', 'o', 'p', 'x', 'y', 'z'], lstHint=['a']))
     #On récupère donc l'ensemble des mots
-    assert len(result) == 3
-    assert "abc" in result
-    assert "abd" in result
+    assert len(result) == 1
     assert "api" in result

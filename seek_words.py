@@ -1,6 +1,6 @@
-import csv
 import time
-
+import codecs
+import unidecode
 
 def isListEmptyOrFullOfNone(lst):
     if not lst:
@@ -28,26 +28,22 @@ def isSearchByContent(word, lstCar=[]):
     if len(lstCar) < len(word):
         return False
     compteur = 0
+    word_no_accent = unidecode.unidecode(word)
     for car in lstCar:
         #print(f"recherche de {car} dans {word}")
-        if car in word:
+        if car in word_no_accent:
             compteur += 1
-            #print(f"-{car} est dans {word} : count={compteur}")
-        # else:
-            #print(f"-{car} n'est pas dans {word}")
     #print(f"On a trouvé {compteur} lettres dans {word}")
     if compteur != len(word):
         return False
     return True
 
 
-"""
-Retourne faux si word n'est pas renseigné
-Retourne vrai si pas de Hint renseigné
-"""
-
-
 def isSearchByHint(word, lstHint=[]):
+    """
+    Retourne faux si word n'est pas renseigné
+    Retourne vrai si pas de Hint renseigné
+    """
     if not word:
         return False
     if isListEmptyOrFullOfNone(lstHint):
@@ -66,7 +62,7 @@ def searchInFile(nbCar=99, lstCar=[], lstHint=[]):
         raise Exception(
             "Les paramètres lstCar et lstHint ne peuvent pas être vides en même temps")
 
-    for line in open("assets/" + str(nbCar) + ".txt", "r"):
+    for line in codecs.open("assets/" + str(nbCar) + ".txt", "r", "utf-8"):
         mot = line.strip()
         if isSearchByContent(mot, lstCar) and isListEmptyOrFullOfNone(lstHint):
             yield mot
@@ -82,9 +78,10 @@ def searchInManyFiles(lstCar=[], lstHint=[]):
             yield m
 
 
-s = time.time()
+""" s = time.time()
 print("-".join(searchInManyFiles(lstCar=[
                'i', 'n', 'f', 'o', 'r', 'm', 'a', 't', 'i', 'q', 'u', 'e'], lstHint=['i', '', '', 'o', None,'m' , ])))
 
 e = time.time()
 print(f"{e-s} secondes")
+ """
