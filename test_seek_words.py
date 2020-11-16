@@ -135,6 +135,13 @@ def test_recherche_3_cars_et_plus():
     assert "api" in result
     assert "xyz" in result
 
+def test_aboulie():
+    result = list(sw.searchInFile(nbCar=99, lstCar=[
+                  'g', 'u', 'i', 'l', 'l', 'a', 'u', 'm', 'e']))
+    #aboulie ne doit pas ressortir bien qu'il ai 7 lettres en commun
+    #(à cause du double "l")
+    #aiguail ne doit pas ressortir : il y a 2 fois le a    
+    assert len(result) == 0
 
 def test_recherche_hint_1():
     result = list(sw.searchInFile(nbCar=99, lstHint=[None, "p", None]))
@@ -153,8 +160,10 @@ def test_recherche_hint_2():
 def test_recherche_hint_3():
     result = list(sw.searchInFile(nbCar=99, lstHint=["a"]))
     # Tous les mots qui commencent par "a"
-    assert len(result) == 1
+    assert len(result) == 3
     assert "api" in result
+    assert "aboulie" in result
+    assert "aiguail" in result
 
 def test_recherche_complete():
     #On passe l'ensemble des lettres existantes

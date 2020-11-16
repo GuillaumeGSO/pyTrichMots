@@ -10,7 +10,7 @@ app.config["DEBUG"] = True
 @app.route('/simple', methods=['GET'])
 def simple():
     nbcar = request.args.get('nbcar')
-    lstcar = request.args.get('lstcar')
+    lstcar = list(request.args.get('lstcar'))
     return jsonify(list(searchInFile(nbcar, lstcar)))
     """
     Pour tester

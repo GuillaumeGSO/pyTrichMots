@@ -27,15 +27,14 @@ def isSearchByContent(word, lstCar=[]):
         return False
     if len(lstCar) < len(word):
         return False
-    compteur = 0
+    temp=lstCar.copy()
     word_no_accent = unidecode.unidecode(word)
-    for car in lstCar:
+    for car in word_no_accent:
         #print(f"recherche de {car} dans {word}")
-        if car in word_no_accent:
-            compteur += 1
-    #print(f"On a trouvé {compteur} lettres dans {word}")
-    if compteur != len(word):
-        return False
+        if car in temp:
+            temp.remove(car)
+        else:
+            return False
     return True
 
 
