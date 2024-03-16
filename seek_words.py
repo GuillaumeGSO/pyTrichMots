@@ -61,8 +61,8 @@ def search_in_file(lang="fr", nb_car=99, lst_car=[], lst_hint=[], strict= False)
     if is_empty_cars and is_empty_hint:
         raise Exception(
             "Parameters lstCar et lstHint cannot be empty at the same time")
-
-    for line in codecs.open(f"assets/{lang}/{str(nb_car)}.txt", "r", "utf-8"):
+    file = f"assets/{lang}/{str(nb_car)}.txt" if nb_car !=99 else f"tests/99.txt"
+    for line in codecs.open(file, "r", "utf-8"):
         word = line.strip()
         searchByContent = is_search_by_content(word, list(lst_car), strict)
         searchByHint = is_search_by_hint(word, lst_hint)
