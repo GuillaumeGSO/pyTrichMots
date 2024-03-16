@@ -4,22 +4,21 @@ import unidecode
 
 def isListEmptyOrFullOfNone(lst):
     if not lst:
-        #print("List vide ou nulle")
+        #print("List empty")
         return True
     if all(x is None or not x for x in lst):
-        #print("List avec des None ou "" seulement")
+        #print("List with None ou "" only")
         return True
-    #print("Liste non vide")
+    #print("List no empty")
     return False
 
 
 def isSearchByContent(word, lstCar=[]):
     """
-    Retourne faux si word est non renseigné
-    Retourne faux si rien dans lstCar
-    Retourne faux si il y moins de caractère dans lstCar que dans word
-    Retourne vrai si chaque caractère de word est présent dans lstCar
-    Retourne 
+    Returns False if word is not set
+    Returns False if lstCar is empty
+    Returns False if less caracters in lstCar than in word
+    Returns True if each and every caracters are in lstCar
     """
     if word == None or len(word) == 0:
         return False
@@ -30,7 +29,7 @@ def isSearchByContent(word, lstCar=[]):
     temp=lstCar.copy()
     word_no_accent = unidecode.unidecode(word)
     for car in word_no_accent:
-        #print(f"recherche de {car} dans {word}")
+        #print(f"Search {car} in {word}")
         if car in temp:
             temp.remove(car)
         else:
@@ -40,8 +39,8 @@ def isSearchByContent(word, lstCar=[]):
 
 def isSearchByHint(word, lstHint=[]):
     """
-    Retourne faux si word n'est pas renseigné
-    Retourne vrai si pas de Hint renseigné
+    Returns False if word empty
+    Returns True if no hint provided
     """
     if not word:
         return False
@@ -49,19 +48,19 @@ def isSearchByHint(word, lstHint=[]):
         return True
     for idx, lettre in enumerate(lstHint):
         if lettre:
-            #print(f"recherche de {lettre} à position {idx} dans {word}")
+            #print(f"seek for {lettre} at position {idx} in {word}")
             if word.find(lettre) != idx:
-                #print(f"abandon car {lettre} n'est pas à {idx} dans {word}")
+                #print(f"give up car {lettre} not at {idx} in {word}")
                 return False
     return True
 
 
-def searchInFile(nbCar=99, lstCar=[], lstHint=[]):
+def searchInFile(lang="fr", nbCar=99, lstCar=[], lstHint=[]):
     if isListEmptyOrFullOfNone(lstCar) and isListEmptyOrFullOfNone(lstHint):
         raise Exception(
-            "Les paramètres lstCar et lstHint ne peuvent pas être vides en même temps")
+            "Parameters lstCar et lstHint cannot be empty at the same time")
 
-    for line in codecs.open("assets/" + str(nbCar) + ".txt", "r", "utf-8"):
+    for line in codecs.open(f"assets/{lang}/{str(nbCar)}.txt", "r", "utf-8"):
         mot = line.strip()
         if isSearchByContent(mot, lstCar) and isListEmptyOrFullOfNone(lstHint):
             yield mot

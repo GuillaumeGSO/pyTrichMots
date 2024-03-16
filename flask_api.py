@@ -7,15 +7,15 @@ app.config["DEBUG"] = True
 
 
 
-@app.route('/simple', methods=['GET'])
-def simple():
+@app.route('/simple/<string:lang>', methods=['GET'])
+def simple(lang):
     nbcar = request.args.get('nbcar')
     lstcar = list(request.args.get('lstcar'))
-    return jsonify(list(searchInFile(nbcar, lstcar)))
+    return jsonify(list(searchInFile(lang, nbcar, lstcar)))
     """
-    Pour tester
-    http://127.0.0.1:5000/simple?nbcar=9&lstcar=a,b,c,e,r,t,y,u,i,i,f
-    http://127.0.0.1:5000/simple?nbcar=5&lstcar=m,e,r,d,e
+    testing URL
+    http://127.0.0.1:5000/simple/fr?nbcar=8&lstcar=a,b,c,e,r,t,y,u,i,i,f
+    http://127.0.0.1:5000/simple/en?nbcar=5&lstcar=m,e,r,d,e
     """
 
 
