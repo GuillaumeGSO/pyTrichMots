@@ -1,19 +1,15 @@
-import time
 import codecs
 import unidecode
 
-def isListEmptyOrFullOfNone(lst):
+def is_list_empty_or_full_of_none(lst):
     if not lst:
-        #print("List empty")
         return True
     if all(x is None or not x for x in lst):
-        #print("List with None ou "" only")
         return True
-    #print("List no empty")
     return False
 
 
-def isSearchByContent(word, lstCar=[]):
+def is_search_by_content(word, lst_car=[], strict = False):
     """
     Returns False if word is not set
     Returns False if lstCar is empty
@@ -22,64 +18,63 @@ def isSearchByContent(word, lstCar=[]):
     """
     if word == None or len(word) == 0:
         return False
-    if isListEmptyOrFullOfNone(lstCar):
+    if is_list_empty_or_full_of_none(lst_car):
         return False
-    if len(lstCar) < len(word):
-        return False
-    temp=lstCar.copy()
-    word_no_accent = unidecode.unidecode(word)
+    
+    word_no_accent = unidecode.unidecode(word).replace("à", "a").replace("é", "e").replace("è", "e").replace("ê", "e").replace("ô", "o")
+    
     for car in word_no_accent:
-        #print(f"Search {car} in {word}")
-        if car in temp:
-            temp.remove(car)
-        else:
-            return False
+      if car not in lst_car:
+        return False
+      else:
+        if strict:
+          lst_car.remove(car)
     return True
 
 
-def isSearchByHint(word, lstHint=[]):
+def is_search_by_hint(word, hint_list=[]):
     """
-    Returns False if word empty
-    Returns True if no hint provided
+    Returns False if word is not provided.
+    Returns True if no hints are provided.
+    Returns False if the word does not contain the character at the hint position.
+    Returns False if the word has the character at the inverted hint position.
+    Returns True if the word contains each letter of the hint at the correct position.
     """
     if not word:
         return False
-    if isListEmptyOrFullOfNone(lstHint):
+    if is_list_empty_or_full_of_none(hint_list):
         return True
-    for idx, lettre in enumerate(lstHint):
-        if lettre:
-            #print(f"seek for {lettre} at position {idx} in {word}")
-            if word.find(lettre) != idx:
-                #print(f"give up car {lettre} not at {idx} in {word}")
+  
+    for hint in hint_list:
+        if hint['inverted']:
+            if word[int(hint['pos'])-1] == hint['car']:
+                return False
+        else:
+            if word[int(hint['pos'])-1] != hint['car']:
                 return False
     return True
 
 
-def searchInFile(lang="fr", nbCar=99, lstCar=[], lstHint=[]):
-    if isListEmptyOrFullOfNone(lstCar) and isListEmptyOrFullOfNone(lstHint):
+def search_in_file(lang="fr", nb_car=99, lst_car=[], lst_hint=[], strict= False):
+    is_empty_hint = is_list_empty_or_full_of_none(lst_hint)
+    is_empty_cars = is_list_empty_or_full_of_none(lst_car)
+    if is_empty_cars and is_empty_hint:
         raise Exception(
             "Parameters lstCar et lstHint cannot be empty at the same time")
 
-    for line in codecs.open(f"assets/{lang}/{str(nbCar)}.txt", "r", "utf-8"):
-        mot = line.strip()
-        if isSearchByContent(mot, lstCar) and isListEmptyOrFullOfNone(lstHint):
-            yield mot
-        elif isListEmptyOrFullOfNone(lstCar) and isSearchByHint(mot, lstHint):
-            yield mot
-        elif isSearchByContent(mot, lstCar) and isSearchByHint(mot, lstHint):
-            yield mot
+    for line in codecs.open(f"assets/{lang}/{str(nb_car)}.txt", "r", "utf-8"):
+        word = line.strip()
+        searchByContent = is_search_by_content(word, list(lst_car), strict)
+        searchByHint = is_search_by_hint(word, lst_hint)
+        if searchByContent and is_empty_hint:
+            yield word
+        elif is_empty_cars and searchByHint:
+            yield word
+        elif searchByContent and searchByHint:
+            yield word
 
 
-def searchInManyFiles(lstCar=[], lstHint=[]):
-    for i in reversed(range(1, len(lstCar)+1)):
-        for m in searchInFile(nbCar=i, lstCar=lstCar, lstHint=lstHint):
+def search_in_many_files(language, lst_car=[], lst_hint=[]):
+    for i in reversed(range(1, len(lst_car)+1)):
+        for m in search_in_file(language, nb_car=i, lst_car=lst_car, lst_hint=lst_hint):
             yield m
-
-
-""" s = time.time()
-print("-".join(searchInManyFiles(lstCar=[
-               'i', 'n', 'f', 'o', 'r', 'm', 'a', 't', 'i', 'q', 'u', 'e'], lstHint=['i', '', '', 'o', None,'m' , ])))
-
-e = time.time()
-print(f"{e-s} secondes")
- """
