@@ -94,7 +94,7 @@ def search_in_file(lang="fr", nb_car=0, lst_car: List[str]=[], lst_hint: List[Hi
             yield word
 
 
-def search_in_many_files(language, lst_car=[], lst_hint=[]):
+def search_in_many_files(lang="fr", lst_car=[], lst_hint=[]):
     for i in reversed(range(1, len(lst_car)+1)):
-        for m in search_in_file(language, nb_car=i, lst_car=lst_car, lst_hint=lst_hint):
+        for m in search_in_file(lang="fr", nb_car=i, lst_car=lst_car, lst_hint=lst_hint):
             yield m
