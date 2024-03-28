@@ -81,8 +81,14 @@ def search_in_file(lang="fr", nb_car=0, lst_car: List[str]=[], lst_hint: List[Hi
     if nb_car==0 or (is_empty_cars and is_empty_hint):
         raise Exception(
             "Parameters lstCar et lstHint cannot be empty at the same time")
-    file = f"assets/{lang}/{str(nb_car)}.txt"
-    for line in codecs.open(file, "r", "utf-8"):
+    
+    file_name = f"assets/{lang}/{str(nb_car)}.txt"
+    try:
+        file_content = codecs.open(file_name, "r", "utf-8")
+    except FileNotFoundError:
+        return []
+        
+    for line in file_content:
         word = line.strip()
         searchByContent = is_search_by_content(word, list(lst_car), strict)
         searchByHint = is_search_by_hint(word, lst_hint)
@@ -94,7 +100,7 @@ def search_in_file(lang="fr", nb_car=0, lst_car: List[str]=[], lst_hint: List[Hi
             yield word
 
 
-def search_in_many_files(lang="fr", lst_car=[], lst_hint=[]):
-    for i in reversed(range(1, len(lst_car)+1)):
-        for m in search_in_file(lang="fr", nb_car=i, lst_car=lst_car, lst_hint=lst_hint):
+def search_in_many_files(lang="fr", cars="", lst_hint=[]):
+    for i in reversed(range(1, len(cars)+1)):
+        for m in search_in_file(lang=lang, nb_car=i, lst_car=cars, lst_hint=lst_hint):
             yield m
