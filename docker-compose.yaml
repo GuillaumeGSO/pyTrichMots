@@ -1,5 +1,6 @@
 services:
   pytrichmots:
+    image: pytrichmots:latest
     build: .
     container_name: pytrichmots-api
     command: uvicorn main:app --host 0.0.0.0 --port 80 --reload
@@ -7,3 +8,9 @@ services:
       - 5000:80
     volumes:
       - .:/app
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/"]
+      interval: 5m
+      timeout: 10s
+      retries: 3
+      start_period: 30s
